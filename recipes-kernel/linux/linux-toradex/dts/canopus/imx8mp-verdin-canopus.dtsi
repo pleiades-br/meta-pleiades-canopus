@@ -1,0 +1,277 @@
+// SPDX-License-Identifier: GPL-2.0-or-later OR MIT
+/*
+ * Copyright 2022 Toradex
+ */
+#include "dt-bindings/net/mscc-phy-vsc8531.h"
+
+/ {
+	reg_eth2phy: regulator-eth2phy {
+		compatible = "regulator-fixed";
+		enable-active-high;
+		gpio = <&gpio_expander_21 4 GPIO_ACTIVE_HIGH>; /* ETH_PWR_EN */
+		off-on-delay = <500000>;
+		regulator-max-microvolt = <3300000>;
+		regulator-min-microvolt = <3300000>;
+		regulator-name = "+V3.3_ETH";
+		startup-delay-us = <200000>;
+		vin-supply = <&reg_3p3v>;
+	};
+
+ 	sound_card: sound-card {
+                compatible = "simple-audio-card";
+                simple-audio-card,format = "i2s";
+                simple-audio-card,frame-master = <&dailink_master>;
+                simple-audio-card,bitclock-master = <&dailink_master>;
+                simple-audio-card,name = "max9867";
+                status = "okay";
+                simple-audio-card,routing =
+                    "Left Line", "LOUT",
+                    "Right Line", "ROUT";
+                simple-audio-card,widgets =
+                    "Headphones", "Headphones",
+                    "Line", "Left Line",
+                    "Line", "Right Line",
+                    "Speaker", "Speaker";
+                dailink_master: simple-audio-card,cpu {
+                        sound-dai = <&sai1>;
+                        clocks = <&audio_blk_ctrl IMX8MP_CLK_AUDIO_BLK_CTRL_SAI1_MCLK1>;
+                };
+
+                simple-audio-card,codec{
+                        sound-dai = <&max9867>;
+                };
+
+        };
+
+    aliases {
+        ethernet0 = &fec;
+    };
+};
+
+&backlight {
+	power-supply = <&reg_3p3v>;
+};
+
+/* Verdin SPI_1 */
+&ecspi1 {
+	status = "okay";
+};
+
+/* EEPROM on display adapter boards */
+&eeprom_display_adapter {
+	status = "okay";
+};
+
+/* EEPROM on Verdin Development board */
+&eeprom_carrier_board {
+	status = "okay";
+};
+
+&eqos {
+	status = "disabled";
+};
+
+&fec {
+	fsl,magic-packet;
+	phy-handle = <&vsc8531_0>;
+	phy-mode = "rgmii-id";
+	pinctrl-names = "default", "sleep";
+	pinctrl-0 = <&pinctrl_fec>;
+	pinctrl-1 = <&pinctrl_fec_sleep>;
+    status = "okay";
+
+	mdio {
+		#address-cells = <1>;
+		#size-cells = <0>;
+
+        vsc8531_0: ethernet-phy@0 {
+            compatible = "ethernet-phy-id0007.0570";
+            vsc8531,vddmac		= <3300>;
+            vsc8531,edge-slowdown	= <7>;
+            vsc8531,led-0-mode	= <VSC8531_LINK_1000_ACTIVITY>;
+            vsc8531,led-1-mode	= <VSC8531_LINK_100_ACTIVITY>;
+			interrupt-parent = <&gpio4>;
+			interrupts = <18 IRQ_TYPE_LEVEL_LOW>;
+		    //load-save-gpios		= <&gpio 10 GPIO_ACTIVE_HIGH>;
+        };
+	}; 
+};
+
+&flexcan1 {
+	status = "disabled";
+};
+
+&flexcan2 {
+	status = "disabled";
+};
+
+/* Verdin QSPI_1 */
+&flexspi {
+	status = "okay";
+};
+
+&gpio_expander_21 {
+	status = "okay";
+	vcc-supply = <&reg_1p8v>;
+};
+
+
+
+/* Current measurement into module VCC */
+&hwmon {
+	status = "okay";
+};
+
+&hwmon_temp {
+	vs-supply = <&reg_1p8v>;
+	status = "okay";
+};
+
+/* Verdin I2C_2_DSI */
+&i2c2 {
+	status = "okay";
+    /delete-property/ atmel_mxt_ts_mezzanine;
+};
+
+&i2c3 {
+	status = "okay";
+};
+
+/* Verdin I2C_1 */
+&i2c4 {
+	status = "okay";
+
+	accerometer: mx6655@15 {
+		compatible = "memsic,mxc6655";
+		reg = <0x15>;
+	};
+
+	/* Audio Codec */
+	max9867: max9867@18 {
+		compatible = "maxim,max9867";
+        clocks = <&audio_blk_ctrl IMX8MP_CLK_AUDIO_BLK_CTRL_SAI1_MCLK1>;
+		#sound-dai-cells = <0>;
+		reg = <0x18>;
+	};
+
+	/* IO Expander */
+	pca6416: gpio@20 {
+		compatible = "nxp,pca6416";
+		reg = <0x20>;
+		gpio-controller;
+		#gpio-cells = <2>;
+	};
+
+	light-sensor@44 {
+		compatible = "ti,opt3001";
+		reg = <0x44>;
+		interrupt-parent = <&gpio1>;
+		interrupts = <15 IRQ_TYPE_EDGE_FALLING>;
+	};
+
+	/* Temperature, humidty sensor */
+	shtc3: shtc3@70 {
+		compatible = "sensirion,shtc3";
+		reg = <0x70>;
+		sensirion,blocking-io;
+	};
+
+};
+
+/* Verdin PCIE_1 */
+&pcie {
+	epdev_on-supply = <&reg_3p3v>;
+	status = "okay";
+};
+
+&pcie_phy {
+	status = "okay";
+};
+
+/* Verdin PWM_1 */
+&pwm1 {
+	status = "okay";
+};
+
+/* Verdin PWM_2 */
+&pwm2 {
+	status = "disabled";
+};
+
+/* Verdin PWM_3_DSI */
+&pwm3 {
+	status = "okay";
+};
+
+&reg_usdhc2_vmmc {
+	vin-supply = <&reg_3p3v>;
+};
+
+/* Verdin I2S_1 */
+&sai1 {
+	#sound-dai-cells = <0>;
+	assigned-clocks = <&clk IMX8MP_CLK_SAI1>;
+	assigned-clock-parents = <&clk IMX8MP_AUDIO_PLL1_OUT>;
+	assigned-clock-rates = <24576000>;
+	clocks = <&audio_blk_ctrl IMX8MP_CLK_AUDIO_BLK_CTRL_SAI1_IPG>, <&clk IMX8MP_CLK_DUMMY>,
+		 <&audio_blk_ctrl IMX8MP_CLK_AUDIO_BLK_CTRL_SAI1_MCLK1>, <&clk IMX8MP_CLK_DUMMY>,
+		 <&clk IMX8MP_CLK_DUMMY>, <&clk IMX8MP_AUDIO_PLL1_OUT>, <&clk IMX8MP_AUDIO_PLL2_OUT>;
+	clock-names = "bus", "mclk0", "mclk1", "mclk2", "mclk3", "pll8k", "pll11k";
+	fsl,sai-mclk-direction-output;
+	pinctrl-names = "default";
+	pinctrl-0 = <&pinctrl_sai1>;
+    status = "okay";
+};
+
+/* Verdin UART_1, connector X50 through RS485 transceiver */
+&uart1 {
+/*	linux,rs485-enabled-at-boot-time;
+	rs485-rts-active-low;
+	rs485-rx-during-tx;*/
+	status = "okay";
+    cts-gpios = <&gpio4 24 GPIO_ACTIVE_LOW>;
+	rts-gpios = <&gpio4 23 GPIO_ACTIVE_LOW>;
+};
+
+/* Verdin UART_2 */
+&uart2 {
+	status = "okay";
+};
+
+/* Verdin UART_3, used as the Linux Console */
+&uart3 {
+	status = "okay";
+};
+
+/* Verdin USB_1 */
+&usb3_phy0 {
+	status = "okay";
+};
+
+&usb3_0 {
+	status = "okay";
+};
+
+&usb_dwc3_0 {
+	status = "okay";
+};
+
+/* Verdin USB_2 */
+&usb3_phy1 {
+	status = "okay";
+};
+
+&usb3_1 {
+	status = "okay";
+};
+
+&usb_dwc3_1 {
+	status = "okay";
+};
+
+/* Limit frequency on dev board due to long traces and bad signal integrity */
+&usdhc2 {
+	max-frequency = <100000000>;
+	status = "okay";
+};
+

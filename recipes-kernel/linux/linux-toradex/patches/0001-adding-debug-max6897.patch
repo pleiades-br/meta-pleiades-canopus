@@ -1,0 +1,14 @@
+diff --git a/sound/soc/codecs/max9867.c b/sound/soc/codecs/max9867.c
+index 09b2d730e9fd..fc5034693f95 100644
+--- a/sound/soc/codecs/max9867.c
++++ b/sound/soc/codecs/max9867.c
+@@ -403,6 +403,9 @@ static int max9867_set_dai_sysclk(struct snd_soc_dai *codec_dai,
+ 	int value = 0;
+ 
+ 	/* Set the prescaler based on the master clock frequency*/
++    dev_warn(component->dev,
++			"Frequency %uHz Expected to be set\n",
++			freq);
+ 	if (freq >= 10000000 && freq <= 20000000) {
+ 		value |= MAX9867_PSCLK_10_20;
+ 		max9867->pclk = freq;
