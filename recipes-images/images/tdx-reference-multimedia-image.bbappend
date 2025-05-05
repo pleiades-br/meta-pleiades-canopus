@@ -13,9 +13,8 @@ IMAGE_INSTALL:append:plds-verdin-imx8mp-canopus = " i2c-tools"
 IMAGE_INSTALL:append:plds-verdin-imx8mp-canopus = " ruart"
 IMAGE_INSTALL:append:plds-verdin-imx8mp-canopus = " udev-canopus-rules"
 IMAGE_INSTALL:append:plds-verdin-imx8mp-canopus = " kernel-module-eg91-ctrl"
-IMAGE_INSTALL:append:plds-verdin-imx8mp-canopus = " safetyrails"
+IMAGE_INSTALL:append:plds-verdin-imx8mp-canopus = " opencv"
+IMAGE_INSTALL:append:plds-verdin-imx8mp-canopus = " tensorflow-lite"
+IMAGE_INSTALL:append:plds-verdin-imx8mp-canopus = " keras"
 
 IMAGE_INSTALL:remove:plds-verdin-imx8mp-canopus = " hostapd-example"
-
-IMAGE_INSTALL:append:verdin-imx8mp = " safetyrails"
-IMAGE_INSTALL:append:verdin-imx8mp = " i2c-tools"
