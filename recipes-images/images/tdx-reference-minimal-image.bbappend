@@ -6,7 +6,7 @@ IMAGE_INSTALL:remove:plds-verdin-imx8mp-canopus = " connman-plugin-wifi"
 IMAGE_INSTALL:remove:plds-verdin-imx8mp-canopus = " connman-plugin-ethernet"
 IMAGE_INSTALL:remove:plds-verdin-imx8mp-canopus = " connman-plugin-loopback"
 # Add NetworkManager
-IMAGE_INSTALL:remove:plds-verdin-imx8mp-canopus = " networkmanager"
+IMAGE_INSTALL:append:plds-verdin-imx8mp-canopus = " networkmanager"
 IMAGE_INSTALL:append:plds-verdin-imx8mp-canopus = " modemmanager"
 # Add i2c-tools and uart tools
 IMAGE_INSTALL:append:plds-verdin-imx8mp-canopus = " i2c-tools"
@@ -20,3 +20,4 @@ IMAGE_INSTALL:append:plds-verdin-imx8mp-canopus = " keras"
 	
 
 IMAGE_INSTALL:remove:plds-verdin-imx8mp-canopus = " hostapd-example"
+IMAGE_FEATURES:remove:plds-verdin-imx8mp-canopus = "read-only-rootfs"

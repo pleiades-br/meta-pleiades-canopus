@@ -17,36 +17,6 @@
 		vin-supply = <&reg_3p3v>;
 	};
 
-    imx219_vana_2v8: 2p8v {
-		compatible = "regulator-fixed";
-		regulator-name = "camera_vana";
-		regulator-min-microvolt = <2800000>;
-		regulator-max-microvolt = <2800000>;
-		regulator-always-on;
-	};
-
-	imx219_vdig_1v8: 1p8v {
-		compatible = "regulator-fixed";
-		regulator-name = "camera_vdig";
-		regulator-min-microvolt = <1500000>;
-		regulator-max-microvolt = <1500000>;
-		regulator-always-on;
-	};
-
-	imx219_vddl_1v2: 1p2v {
-		compatible = "regulator-fixed";
-		regulator-name = "camera_vddl";
-		regulator-min-microvolt = <1200000>;
-		regulator-max-microvolt = <1200000>;
-		regulator-always-on;
-	};
-
-	osc25250_clk: osc25250_clk {
-		compatible = "fixed-clock";
-		#clock-cells = <0>;
-		clock-frequency = <24000000>;
-	};
-
  	sound_card: sound-card {
                 compatible = "simple-audio-card";
                 simple-audio-card,format = "i2s";
@@ -165,17 +135,24 @@
 	imx219_0: imx219@10 {
 		compatible = "sony,imx219";
 		reg = <0x10>;
-		clocks = <&osc25250_clk>;
-		VANA-supply = <&imx219_vana_2v8>;
-		VDIG-supply = <&imx219_vdig_1v8>;
-		VDDL-supply = <&imx219_vddl_1v2>;
+        status = "okay";
+
+		clocks = <&clk IMX8MP_CLK_IPP_DO_CLKO2>;
+		clock-names = "xclk";
+
+		VANA-supply = <&reg_3p3v>; /* 2.8v */
+		VDIG-supply = <&reg_3p3v>; /* 1.8v */
+		VDDL-supply = <&reg_3p3v>; /* 1.2v */
         reset-gpios = <&gpio1 7 GPIO_ACTIVE_HIGH>;
 
 		port {
-			imx219_0_ep: endpoint {
-                remote-endpoint = <&mipi_csi0_ep>;
+			imx219_mipi_0_ep: endpoint {
+				clock-lanes = <0>;
 				data-lanes = <1 2>;
-				link-frequencies = /bits/ 64 <456000000>;
+				clock-noncontinuous;
+				link-frequencies =
+					/bits/ 64 <456000000>;
+				remote-endpoint = <&mipi_csi0_ep>;
 			};
 		};
 	};
@@ -183,24 +160,42 @@
 
 &i2c3 {
 	status = "okay";
-
-	imx219_1: imx219@10 {
+	imx219_1@10 {
 		compatible = "sony,imx219";
 		reg = <0x10>;
-		clocks = <&osc25250_clk>;
-		VANA-supply = <&imx219_vana_2v8>;
-		VDIG-supply = <&imx219_vdig_1v8>;
-		VDDL-supply = <&imx219_vddl_1v2>;
+		status = "okay";
+
+		/*
+		Sensor board has its own crystal (and
+		toradex-to-rpi-adapter-board does not have have the clock
+		pin forwarded in any case), but the driver insists to
+		have an xclk. This should probably refer to a dummy
+		clock then, but this just sets up an actual clock.
+		*/
+
+		clocks = <&clk IMX8MP_CLK_IPP_DO_CLKO2>;
+		clock-names = "xclk";
+
+		/* All supplies are derived from the 3p3v on the sensor
+		 * board. This should probably be modeled differently in
+		 * DT, but this seems to work anyway. */
+		VANA-supply = <&reg_3p3v>; /* 2.8v */
+		VDIG-supply = <&reg_3p3v>; /* 1.8v */
+		VDDL-supply = <&reg_3p3v>; /* 1.2v */
         reset-gpios = <&gpio4 3 GPIO_ACTIVE_HIGH>;
 
 		port {
-			imx219_1_ep: endpoint {
-                remote-endpoint = <&mipi_csi0_ep>;
+			imx219_mipi_1_ep: endpoint {
+				clock-lanes = <0>;
 				data-lanes = <1 2>;
-				link-frequencies = /bits/ 64 <456000000>;
+				clock-noncontinuous;
+				link-frequencies =
+					/bits/ 64 <456000000>;
+				remote-endpoint = <&mipi_csi1_ep>;
 			};
 		};
 	};
+
 };
 
 /* Verdin I2C_1 */
@@ -344,16 +339,18 @@
 &mipi_csi_0 {
 	#address-cells = <1>;
 	#size-cells = <0>;
+    csi = <0>;
 	status = "okay";
 
 	port@0 {
 		reg = <0>;
 		mipi_csi0_ep: endpoint {
-			remote-endpoint = <&imx219_0_ep>;
-			data-lanes = <2>;
+			remote-endpoint = <&imx219_mipi_0_ep>;
+			data-lanes = <1 2>;
 			csis-hs-settle = <13>;
 			csis-clk-settle = <2>;
 			csis-wclk;
+            clock-noncontinuous;
 		};
 	};
 };
@@ -361,16 +358,18 @@
 &mipi_csi_1 {
 	#address-cells = <1>;
 	#size-cells = <0>;
+    csi = <1>;
 	status = "okay";
 
 	port@1 {
 		reg = <1>;
 		mipi_csi1_ep: endpoint {
-			remote-endpoint = <&imx219_1_ep>;
-			data-lanes = <2>;
+			remote-endpoint = <&imx219_mipi_1_ep>;
+			data-lanes = <1 2>;
 			csis-hs-settle = <13>;
-			csis-clk-settle = <2>;
+			csis-clk-settle = <12>;
 			csis-wclk;
+            clock-noncontinuous;
 		};
 	};
 };
