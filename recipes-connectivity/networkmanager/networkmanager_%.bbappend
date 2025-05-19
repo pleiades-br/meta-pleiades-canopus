@@ -17,6 +17,7 @@ PACKAGECONFIG:append = " ppp modemmanager"
 do_install:append() {
     install -d ${D}${sysconfdir}/NetworkManager/system-connections
     install -m 0600 ${WORKDIR}/lte-modem.nmconnection ${D}${sysconfdir}/NetworkManager/system-connections
+    install -m 0600 ${WORKDIR}/wireless.nmconnection ${D}${sysconfdir}/NetworkManager/wireless.nmconnection
     install -m 0644 ${WORKDIR}/NetworkManager.conf ${D}${sysconfdir}/NetworkManager
 }
 

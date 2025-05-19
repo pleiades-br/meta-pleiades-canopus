@@ -2,7 +2,7 @@
 id=wireless
 uuid=29883662-1f5e-4e24-aa6c-f3fd03123a75
 type=wifi
-interface-name=wlan0
+interface-name=mlan0
 
 [wifi]
 band=bg

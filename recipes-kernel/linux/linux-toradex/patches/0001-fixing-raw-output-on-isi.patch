@@ -1,0 +1,151 @@
+From 7b4cae976428adf912ea3858801fcf306e0eb1e9 Mon Sep 17 00:00:00 2001
+From: "Aluisio (ZyZy) Victal" <alvictal@gmail.com>
+Date: Mon, 19 May 2025 11:36:49 +0000
+Subject: [PATCH] fixing raw output on isi
+
+---
+ drivers/staging/media/imx/imx8-isi-cap.c   | 12 +++++-
+ drivers/staging/media/imx/imx8-isi-fmt.c   | 10 ++++-
+ drivers/staging/media/imx/imx8-isi-hw.c    | 43 +++++++++++++---------
+ drivers/staging/media/imx/imx8-mipi-csi2.c |  6 ++-
+ 4 files changed, 49 insertions(+), 22 deletions(-)
+
+diff --git a/drivers/staging/media/imx/imx8-isi-cap.c b/drivers/staging/media/imx/imx8-isi-cap.c
+index a7dc61ad5e30..3c4b1c7dc5c6 100644
+--- a/drivers/staging/media/imx/imx8-isi-cap.c
++++ b/drivers/staging/media/imx/imx8-isi-cap.c
+@@ -54,7 +54,13 @@ struct mxc_isi_fmt mxc_isi_src_formats[] = {
+ 		.memplanes	= 1,
+ 		.colplanes	= 1,
+ 		.align		= 2,
+-	}
++	}, {
++        .name		= "SGRB10",
++        .fourcc		= V4L2_PIX_FMT_SGRBG10,
++        .depth		= { 16 },
++        .memplanes	= 1,
++        .colplanes	= 1,
++    }
+ };
+ 
+ static struct v4l2_subdev *mxc_get_remote_subdev(struct v4l2_subdev *subdev,
+@@ -102,7 +108,9 @@ struct mxc_isi_fmt *mxc_isi_get_src_fmt(struct v4l2_subdev_format *sd_fmt)
+ 	    sd_fmt->format.code == MEDIA_BUS_FMT_UYVY8_2X8 ||
+ 	    sd_fmt->format.code == MEDIA_BUS_FMT_YUYV8_2X8)
+ 		index = 1;
+-	else
++	else if (sd_fmt->format.code == MEDIA_BUS_FMT_SGRBG10_1X10 ) 
++        index = 2;
++    else
+ 		index = 0;
+ 	return &mxc_isi_src_formats[index];
+ }
+diff --git a/drivers/staging/media/imx/imx8-isi-fmt.c b/drivers/staging/media/imx/imx8-isi-fmt.c
+index db11c809a3d3..2501a667ca03 100644
+--- a/drivers/staging/media/imx/imx8-isi-fmt.c
++++ b/drivers/staging/media/imx/imx8-isi-fmt.c
+@@ -97,7 +97,15 @@ struct mxc_isi_fmt mxc_isi_out_formats[] = {
+ 		.colplanes	= 1,
+ 		.align		= 2,
+ 		.mbus_code	= MEDIA_BUS_FMT_RGB888_1X24,
+-	}
++	}, {
++        .name		= "BA10",
++        .fourcc		= V4L2_PIX_FMT_SGRBG10,
++        .depth		= { 16 },
++        .color		= MXC_ISI_OUT_FMT_RAW16,
++        .memplanes	= 1,
++        .colplanes	= 1,
++        .mbus_code	= MEDIA_BUS_FMT_SGRBG10_1X10,		
++    }
+ };
+ 
+ size_t mxc_isi_out_formats_size = ARRAY_SIZE(mxc_isi_out_formats);
+diff --git a/drivers/staging/media/imx/imx8-isi-hw.c b/drivers/staging/media/imx/imx8-isi-hw.c
+index 193ff5c5fd33..4390720decab 100644
+--- a/drivers/staging/media/imx/imx8-isi-hw.c
++++ b/drivers/staging/media/imx/imx8-isi-hw.c
+@@ -143,7 +143,7 @@ EXPORT_SYMBOL_GPL(is_buf_active);
+ 
+ static void chain_buf(struct mxc_isi_dev *mxc_isi, struct mxc_isi_frame *frm)
+ {
+-	u32 val;
++	u32 val = 0;
+ 
+ 	if (frm->o_width > ISI_2K) {
+ 		val = readl(mxc_isi->regs + CHNL_CTRL);
+@@ -339,22 +339,31 @@ void mxc_isi_channel_set_csc(struct mxc_isi_dev *mxc_isi,
+ 
+ 	mxc_isi->cscen = 1;
+ 
+-	if (is_yuv(src_fmt->fourcc) && is_rgb(dst_fmt->fourcc)) {
+-		/* YUV2RGB */
+-		csc = YUV2RGB;
+-		/* YCbCr enable???  */
+-		val |= (CHNL_IMG_CTRL_CSC_MODE_YCBCR2RGB << CHNL_IMG_CTRL_CSC_MODE_OFFSET);
+-		val |= (CHNL_IMG_CTRL_YCBCR_MODE_ENABLE << CHNL_IMG_CTRL_YCBCR_MODE_OFFSET);
+-	} else if (is_rgb(src_fmt->fourcc) && is_yuv(dst_fmt->fourcc)) {
+-		/* RGB2YUV */
+-		csc = RGB2YUV;
+-		val |= (CHNL_IMG_CTRL_CSC_MODE_RGB2YCBCR << CHNL_IMG_CTRL_CSC_MODE_OFFSET);
+-	} else {
+-		/* Bypass CSC */
+-		pr_info("bypass csc\n");
+-		mxc_isi->cscen = 0;
+-		val |= CHNL_IMG_CTRL_CSC_BYPASS_ENABLE;
+-	}
++
++    if (dst_fmt->fourcc == V4L2_PIX_FMT_SGRBG10) {
++        /* Bypass CSC */
++        printk("%s, %s, %d is using V4L2_PIX_FMT_SGRBG10\n", __FILE__, __FUNCTION__, __LINE__);
++        pr_info("bypass csc\n");
++        mxc_isi->cscen = 0;
++        val |= CHNL_IMG_CTRL_CSC_BYPASS_ENABLE;
++    } else {
++        if (is_yuv(src_fmt->fourcc) && is_rgb(dst_fmt->fourcc)) {
++            /* YUV2RGB */
++            csc = YUV2RGB;
++            /* YCbCr enable???  */
++            val |= (CHNL_IMG_CTRL_CSC_MODE_YCBCR2RGB << CHNL_IMG_CTRL_CSC_MODE_OFFSET);
++            val |= (CHNL_IMG_CTRL_YCBCR_MODE_ENABLE << CHNL_IMG_CTRL_YCBCR_MODE_OFFSET);
++        } else if (is_rgb(src_fmt->fourcc) && is_yuv(dst_fmt->fourcc)) {
++            /* RGB2YUV */
++            csc = RGB2YUV;
++            val |= (CHNL_IMG_CTRL_CSC_MODE_RGB2YCBCR << CHNL_IMG_CTRL_CSC_MODE_OFFSET);
++        } else {
++            /* Bypass CSC */
++            pr_info("bypass csc\n");
++            mxc_isi->cscen = 0;
++            val |= CHNL_IMG_CTRL_CSC_BYPASS_ENABLE;
++        }
++    }
+ 
+ 	printk_pixelformat("input fmt", src_fmt->fourcc);
+ 	printk_pixelformat("output fmt", dst_fmt->fourcc);
+diff --git a/drivers/staging/media/imx/imx8-mipi-csi2.c b/drivers/staging/media/imx/imx8-mipi-csi2.c
+index 3297845d64b4..234c2f3a767d 100644
+--- a/drivers/staging/media/imx/imx8-mipi-csi2.c
++++ b/drivers/staging/media/imx/imx8-mipi-csi2.c
+@@ -534,7 +534,8 @@ static void mxc_mipi_csi2_csr_config(struct mxc_mipi_csi2_dev *csi2dev)
+ 	u32 val;
+ 
+ 	/* format */
+-	val = 0;
++	//val = 0;
++    val = ~CSI2SS_DATA_TYPE_RAW10;
+ 	writel(val, csi2dev->csr_regs + CSI2SS_DATA_TYPE);
+ 
+ 	/* polarity */
+@@ -577,7 +578,8 @@ static void mxc_mipi_csi2_hc_config(struct mxc_mipi_csi2_dev *csi2dev)
+ 	writel(0x1FF, csi2dev->base_regs + CSI2RX_IRQ_MASK);
+ 
+ 	/* vid_vc */
+-	writel(3, csi2dev->base_regs + 0x184);
++	//writel(3, csi2dev->base_regs + 0x184);
++    writel(0, csi2dev->base_regs + 0x184);
+ }
+ 
+ static struct media_pad *mxc_csi2_get_remote_sensor_pad(struct mxc_mipi_csi2_dev *csi2dev)
+-- 
+2.25.1
+
