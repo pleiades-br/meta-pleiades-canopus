@@ -346,7 +346,7 @@
 		reg = <0>;
 		mipi_csi0_ep: endpoint {
 			remote-endpoint = <&imx219_mipi_0_ep>;
-			data-lanes = <1 2>;
+			data-lanes = <2>;
 			csis-hs-settle = <13>;
 			csis-clk-settle = <2>;
 			csis-wclk;
@@ -365,7 +365,7 @@
 		reg = <1>;
 		mipi_csi1_ep: endpoint {
 			remote-endpoint = <&imx219_mipi_1_ep>;
-			data-lanes = <1 2>;
+			data-lanes = <2>;
 			csis-hs-settle = <13>;
 			csis-clk-settle = <12>;
 			csis-wclk;
@@ -385,9 +385,6 @@
 		status = "okay";
 	};
 
-	m2m_device {
-		status = "okay";
-	};
 };
 
 &isi_1 {
