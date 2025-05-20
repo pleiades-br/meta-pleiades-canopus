@@ -7,7 +7,7 @@ After=sys-subsystem-net-devices-uap0.device
 [Service]
 Type=forking
 PIDFile=/run/hostapd.pid
-ExecStart=/usr/sbin/hostapd /etc/hostapd/hostapd.conf -P /run/hostapd.pid -B
+ExecStart=/usr/sbin/hostapd /etc/hostapd.conf -P /run/hostapd.pid -B
 
 [Install]
 WantedBy=multi-user.target

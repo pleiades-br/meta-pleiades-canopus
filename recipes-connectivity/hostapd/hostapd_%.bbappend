@@ -5,6 +5,8 @@ SRC_URI += " \
     file://hostapd.service \
 "
 
+SYSTEMD_SERVICE:${PN} = "hostapd.service"
+
 do_install:append() {
     install -m 0644 ${WORKDIR}/hostapd.conf  ${D}${sysconfdir}/
 
