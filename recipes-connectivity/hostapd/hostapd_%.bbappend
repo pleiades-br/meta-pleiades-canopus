@@ -18,3 +18,5 @@ do_install:append() {
 		-e 's,@BASE_BINDIR@,${base_bindir},g' \
 		${D}${systemd_system_unitdir}/hostapd.service
 }
+
+FILES:${PN} += " ${systemd_system_unitdir}"
