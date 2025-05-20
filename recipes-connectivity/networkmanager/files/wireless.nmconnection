@@ -2,24 +2,25 @@
 id=wireless
 uuid=29883662-1f5e-4e24-aa6c-f3fd03123a75
 type=wifi
-interface-name=mlan0
+interface-name=uap0
 
 [wifi]
 band=bg
-channel=3
+channel=6
 mode=ap
 ssid=CANOPUS_WIFI
 
 [wifi-security]
 key-mgmt=wpa-psk
+pairwise=ccmp
+group=ccmp
 psk=canopus123
 
 [ipv4]
-address1=192.168.100.1/24
-method=shared
+address1=192.168.50.1/24,192.168.50.1
+method=manual
 
 [ipv6]
-addr-gen-mode=stable-privacy
-method=auto
+method=ignore
 
 [proxy]
