@@ -1,0 +1,1 @@
+RDEPENDS:packagegroup-base-wifi:remove = "wpa-supplicant wireless-regdb-static"

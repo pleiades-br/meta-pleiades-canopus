@@ -1,0 +1,1 @@
+RRECOMMENDS:packagegroup-wifi-tdx-cli:remove = "hostapd-example wireless-regdb-static"

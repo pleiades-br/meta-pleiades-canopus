@@ -1,0 +1,1 @@
+RDEPENDS:packagegroup-meta-python3-ptest:remove = "python3-wpa-supplicant"
