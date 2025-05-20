@@ -9,7 +9,8 @@ SRC_URI:append:plds-verdin-imx8mp-canopus = " \
             file://dts/canopus/imx8mp-verdin-wifi-canopus.dts \
             file://patches/0001-fixing-imx219-init.patch \
             file://patches/0001-imx219-fixing-spower-function.patch \
-            file://patches/0001-fixing-raw-output-on-isi.patch"
+            file://patches/0001-fixing-raw-output-on-isi.patch \
+            file://patches/0001-changing-default-video-input-formats.patch"
 
 SRC_URI:append:verdin-imx8mp = " \
             file://defconfig \

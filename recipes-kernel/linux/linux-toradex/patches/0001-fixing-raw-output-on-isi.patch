@@ -20,8 +20,8 @@ index a7dc61ad5e30..3c4b1c7dc5c6 100644
  		.align		= 2,
 -	}
 +	}, {
-+        .name		= "SGRB10",
-+        .fourcc		= V4L2_PIX_FMT_SGRBG10,
++        .name		= "SRGGB10",
++        .fourcc		= V4L2_PIX_FMT_SRGGB10,
 +        .depth		= { 16 },
 +        .memplanes	= 1,
 +        .colplanes	= 1,
@@ -34,7 +34,7 @@ index a7dc61ad5e30..3c4b1c7dc5c6 100644
  	    sd_fmt->format.code == MEDIA_BUS_FMT_YUYV8_2X8)
  		index = 1;
 -	else
-+	else if (sd_fmt->format.code == MEDIA_BUS_FMT_SGRBG10_1X10 ) 
++	else if (sd_fmt->format.code == MEDIA_BUS_FMT_SRGGB10_1X10 ) 
 +        index = 2;
 +    else
  		index = 0;
@@ -51,12 +51,12 @@ index db11c809a3d3..2501a667ca03 100644
 -	}
 +	}, {
 +        .name		= "BA10",
-+        .fourcc		= V4L2_PIX_FMT_SGRBG10,
++        .fourcc		= V4L2_PIX_FMT_SRGGB10,
 +        .depth		= { 16 },
-+        .color		= MXC_ISI_OUT_FMT_RAW16,
++        .color		= MXC_ISI_OUT_FMT_RAW10,
 +        .memplanes	= 1,
 +        .colplanes	= 1,
-+        .mbus_code	= MEDIA_BUS_FMT_SGRBG10_1X10,		
++        .mbus_code	= MEDIA_BUS_FMT_SRGGB10_1X10,		
 +    }
  };
  
@@ -95,7 +95,7 @@ index 193ff5c5fd33..4390720decab 100644
 -		val |= CHNL_IMG_CTRL_CSC_BYPASS_ENABLE;
 -	}
 +
-+    if (dst_fmt->fourcc == V4L2_PIX_FMT_SGRBG10) {
++    if (dst_fmt->fourcc == V4L2_PIX_FMT_SRGGB10) {
 +        /* Bypass CSC */
 +        printk("%s, %s, %d is using V4L2_PIX_FMT_SGRBG10\n", __FILE__, __FUNCTION__, __LINE__);
 +        pr_info("bypass csc\n");
