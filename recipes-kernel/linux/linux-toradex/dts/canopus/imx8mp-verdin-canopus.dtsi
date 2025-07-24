@@ -144,6 +144,7 @@
 		VDIG-supply = <&reg_3p3v>; /* 1.8v */
 		VDDL-supply = <&reg_3p3v>; /* 1.2v */
         reset-gpios = <&gpio1 7 GPIO_ACTIVE_HIGH>;
+        csi_id = <0>;
 
 		port {
 			imx219_mipi_0_ep: endpoint {
@@ -183,6 +184,7 @@
 		VDIG-supply = <&reg_3p3v>; /* 1.8v */
 		VDDL-supply = <&reg_3p3v>; /* 1.2v */
         reset-gpios = <&gpio4 3 GPIO_ACTIVE_HIGH>;
+        csi_id = <1>;
 
 		port {
 			imx219_mipi_1_ep: endpoint {

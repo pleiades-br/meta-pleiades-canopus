@@ -1473,7 +1473,7 @@
 +		}
 +	}
 +
-+	sensor->rst_gpio = of_get_named_gpio(dev->of_node, "rst-gpios", 0);
++	sensor->rst_gpio = of_get_named_gpio(dev->of_node, "reset-gpios", 0);
 +	if (!gpio_is_valid(sensor->rst_gpio))
 +		dev_warn(dev, "No sensor reset pin available");
 +	else {
