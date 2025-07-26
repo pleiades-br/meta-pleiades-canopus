@@ -6,16 +6,11 @@ SRC_URI:append:plds-verdin-imx8mp-canopus = " \
             file://defconfig \
             file://dts/canopus/imx8mp-verdin-canopus.dtsi \
             file://dts/canopus/imx8mp-verdin-wifi-canopus.dtsi \
-            file://dts/canopus/imx8mp-verdin-wifi-canopus.dts \
-            file://patches/0001-fixing-imx219-init.patch \
-            file://patches/0001-imx219-fixing-spower-function.patch \
-            file://patches/0001-fixing-raw-output-on-isi.patch \
-            file://patches/0001-changing-default-video-input-formats.patch"
+            file://dts/canopus/imx8mp-verdin-wifi-canopus.dts"
 
 SRC_URI:append:verdin-imx8mp = " \
             file://defconfig \
-            file://dts/yavia/imx8mp-verdin-yavia.dtsi \
-            file://patches/0001-adding-debug-max6897.patch"
+            file://dts/yavia/imx8mp-verdin-yavia.dtsi "
 
 do_patchextra() {
     install -d ${STAGING_KERNEL_DIR}/arch/arm64/boot/dts/freescale
