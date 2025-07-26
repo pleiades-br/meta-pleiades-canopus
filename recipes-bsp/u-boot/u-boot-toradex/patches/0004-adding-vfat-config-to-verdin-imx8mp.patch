@@ -1,9 +1,0 @@
-diff --git a/configs/verdin-imx8mp_defconfig b/configs/verdin-imx8mp_defconfig
-index ae022ec3999..a970d6045b1 100644
---- a/configs/verdin-imx8mp_defconfig
-+++ b/configs/verdin-imx8mp_defconfig
-@@ -165,3 +165,4 @@ CONFIG_USB_GADGET_PRODUCT_NUM=0x4000
- CONFIG_IMX_WATCHDOG=y
- CONFIG_HEXDUMP=y
- CONFIG_OF_LIBFDT_OVERLAY=y
-+CONFIG_SUPPORT_VFAT=y

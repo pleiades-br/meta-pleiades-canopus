@@ -1,0 +1,25 @@
+From b048977384f43f17d328bd2cb5b70f1828d8e225 Mon Sep 17 00:00:00 2001
+From: "Aluisio (ZyZy) Victal" <alvictal@gmail.com>
+Date: Sat, 26 Jul 2025 17:01:44 +0000
+Subject: [PATCH] adding canopus board as fdt board
+
+---
+ include/configs/verdin-imx8mp.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/include/configs/verdin-imx8mp.h b/include/configs/verdin-imx8mp.h
+index 0b88e95603d..417e9fe4dfd 100644
+--- a/include/configs/verdin-imx8mp.h
++++ b/include/configs/verdin-imx8mp.h
+@@ -41,7 +41,7 @@
+ 	MEM_LAYOUT_ENV_SETTINGS \
+ 	"boot_script_dhcp=boot.scr\0" \
+ 	"console=ttymxc2\0" \
+-	"fdt_board=dev\0" \
++	"fdt_board=canopus\0" \
+ 	"initrd_addr=0x43800000\0" \
+ 	"initrd_high=0xffffffffffffffff\0" \
+ 	"update_uboot=askenv confirm Did you load flash.bin (y/N)?; " \
+-- 
+2.25.1
+

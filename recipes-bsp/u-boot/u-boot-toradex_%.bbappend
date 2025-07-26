@@ -2,13 +2,7 @@ FILESEXTRAPATHS:prepend := "${THISDIR}/${PN}:"
 
 SRC_URI:append:plds-verdin-imx8mp-canopus = " \
             file://config/verdin-imx8mp-canopus_defconfig \
-            file://patches/0001-uboot-variable-adjust-for-Canopus-board.patch \
-            file://patches/0002-uboot-canopus-eg91-vbat.patch"
-
-SRC_URI:append:verdin-imx8mp = " \
-            file://patches/0003-uboot-variable-adjust-for-yavia-board.patch \
-            file://patches/0004-adding-vfat-config-to-verdin-imx8mp.patch "
-            
+            file://patches/0001-adding-canopus-board-as-fdt-board.patch"           
 
 do_patchextra() {
     if [ "${MACHINE}" == "plds-verdin-imx8mp-canopus" ]
