@@ -5,9 +5,10 @@
 # Since it also generates the image.json description file it is rather
 # interwind with the boot flow which is U-Boot target specific.
 
+KERNEL_DEVICETREE_BASENAME = "${@make_dtb_boot_files(d)}"
 WKS_FILE_DEPENDS:append = " tezi-metadata virtual/dtb"
 DEPENDS += "${WKS_FILE_DEPENDS}"
-IMAGE_BOOT_FILES_REMOVE = "${@make_dtb_boot_files(d) if d.getVar('KERNEL_IMAGETYPE') == 'fitImage' else ''}"
+IMAGE_BOOT_FILES_REMOVE = "${@'${KERNEL_DEVICETREE_BASENAME}' if d.getVar('KERNEL_IMAGETYPE') == 'fitImage' else ''}"
 IMAGE_BOOT_FILES:append = " overlays.txt ${@'' if d.getVar('KERNEL_IMAGETYPE') == 'fitImage' else 'overlays/*;overlays/'}"
 IMAGE_BOOT_FILES:remove = "${IMAGE_BOOT_FILES_REMOVE}"
 
@@ -32,7 +33,16 @@ TEZI_ROOT_FSOPTS ?= "-E nodiscard"
 TEZI_ROOT_LABEL ??= "RFS"
 TEZI_ROOT_NAME ??= "rootfs"
 TEZI_ROOT_SUFFIX ??= "tar.xz"
+TEZI_ROOT_PART_TYPE ??= "83"
+TEZI_ROOT_PART_SIZE ??= "512"
 TEZI_ROOT_FILELIST ??= ""
+TEZI_DATA_ENABLED ??= "0"
+TEZI_DATA_PART_SIZE ??= "512"
+TEZI_DATA_PART_TYPE ??= "83"
+TEZI_DATA_LABEL ??= "DATA"
+TEZI_DATA_FSTYPE ??= "ext4"
+TEZI_DATA_FSOPTS ?= "-E nodiscard"
+TEZI_DATA_FILES ?= ""
 TEZI_USE_BOOTFILES ??= "true"
 TEZI_AUTO_INSTALL ??= "false"
 TEZI_BOOT_SUFFIX ??= "${@'bootfs.tar.xz' if oe.types.boolean('${TEZI_USE_BOOTFILES}') else ''}"
@@ -58,9 +68,9 @@ TEZI_EULA_URL:ti-soc ?= ""
 # Append tar command to store uncompressed image size to ${T}.
 # If a custom rootfs type is used make sure this file is created
 # before compression.
-IMAGE_CMD:tar:append = "; du -ks ${IMGDEPLOYDIR}/${IMAGE_NAME}${IMAGE_NAME_SUFFIX}.tar | cut -f 1 > ${T}/image-size${IMAGE_NAME_SUFFIX}"
-CONVERSION_CMD:tar:append = "; du -ks ${IMGDEPLOYDIR}/${IMAGE_NAME}${IMAGE_NAME_SUFFIX}.${type}.tar | cut -f 1 > ${T}/image-size.${type}"
-CONVERSION_CMD:tar = "touch ${IMGDEPLOYDIR}/${IMAGE_NAME}${IMAGE_NAME_SUFFIX}.${type}; ${IMAGE_CMD_TAR} --numeric-owner -cf ${IMGDEPLOYDIR}/${IMAGE_NAME}${IMAGE_NAME_SUFFIX}.${type}.tar -C ${TAR_IMAGE_ROOTFS} . || [ $? -eq 1 ]"
+IMAGE_CMD:tar:append = "; du -ks ${IMGDEPLOYDIR}/${IMAGE_NAME}.tar | cut -f 1 > ${T}/image-size${IMAGE_NAME_SUFFIX}"
+CONVERSION_CMD:tar:append = "; du -ks ${IMGDEPLOYDIR}/${IMAGE_NAME}.${type}.tar | cut -f 1 > ${T}/image-size.${type}"
+CONVERSION_CMD:tar = "touch ${IMGDEPLOYDIR}/${IMAGE_NAME}.${type}; ${IMAGE_CMD_TAR} --numeric-owner -cf ${IMGDEPLOYDIR}/${IMAGE_NAME}.${type}.tar -C ${TAR_IMAGE_ROOTFS} . || [ $? -eq 1 ]"
 CONVERSIONTYPES:append = " tar"
 
 def get_uncompressed_size(d, type):
@@ -240,17 +250,33 @@ def rootfs_tezi_emmc(d, use_bootfiles):
                 }
               })
 
-    rootfs = {
-               "partition_size_nominal": 512,
-               "want_maximised": True,
-               "content": {
-                 "label": d.getVar('TEZI_ROOT_LABEL'),
-                 "filesystem_type": d.getVar('TEZI_ROOT_FSTYPE'),
-                 "mkfs_options": d.getVar('TEZI_ROOT_FSOPTS'),
-                 "filename": imagename + "." + d.getVar('TEZI_ROOT_SUFFIX'),
-                 "uncompressed_size": get_uncompressed_size(d, d.getVar('TEZI_ROOT_NAME'))
-               }
-             }
+    if d.getVar('TEZI_ROOT_FSTYPE') == "raw":
+        rootfs = {
+                   "partition_size_nominal": d.getVar('TEZI_ROOT_PART_SIZE'),
+                   "partition_type": d.getVar('TEZI_ROOT_PART_TYPE'),
+                   "want_maximised": True,
+                   "content": {
+                     "filesystem_type": "raw",
+                     "rawfiles": [
+                       {
+                         "filename": imagename + "." + d.getVar('TEZI_ROOT_SUFFIX')
+                       }
+                     ],
+                     "uncompressed_size": get_uncompressed_size(d, d.getVar('TEZI_ROOT_NAME'))
+                   }
+                 }
+    else:
+        rootfs = {
+                   "partition_size_nominal": d.getVar('TEZI_ROOT_PART_SIZE'),
+                   "want_maximised": True,
+                   "content": {
+                     "label": d.getVar('TEZI_ROOT_LABEL'),
+                     "filesystem_type": d.getVar('TEZI_ROOT_FSTYPE'),
+                     "mkfs_options": d.getVar('TEZI_ROOT_FSOPTS'),
+                     "filename": imagename + "." + d.getVar('TEZI_ROOT_SUFFIX'),
+                     "uncompressed_size": get_uncompressed_size(d, d.getVar('TEZI_ROOT_NAME'))
+                   }
+                 }
 
     rootfs_filelist = get_filelist_var(d, 'TEZI_ROOT_FILELIST')
     if rootfs_filelist:
@@ -258,6 +284,20 @@ def rootfs_tezi_emmc(d, use_bootfiles):
         rootfs["content"]["uncompressed_size"] += get_filelist_extra_size(d, rootfs_filelist)
 
     filesystem_partitions.append(rootfs)
+
+    if d.getVar('TEZI_DATA_ENABLED') == "1":
+        data = {
+                   "partition_size_nominal": d.getVar('TEZI_DATA_PART_SIZE'),
+                   "partition_type": d.getVar('TEZI_DATA_PART_TYPE'),
+                   "want_maximised": True,
+                   "content": {
+                     "label": d.getVar('TEZI_DATA_LABEL'),
+                     "filesystem_type": d.getVar('TEZI_DATA_FSTYPE'),
+                     "mkfs_options": d.getVar('TEZI_DATA_FSOPTS'),
+                     "filename": d.getVar('TEZI_DATA_FILES')
+                   }
+               }
+        filesystem_partitions.append(data)
 
     return [
         OrderedDict({
@@ -431,7 +471,7 @@ python rootfs_tezi_run_json() {
         flash_data = rootfs_tezi_rawnand(d)
         uenv_file = d.getVar('UBOOT_ENV_TEZI_RAWNAND')
         uboot_file = d.getVar('UBOOT_BINARY_TEZI_RAWNAND')
-        artifacts += " " + d.getVar('KERNEL_IMAGETYPE') + " " + d.getVar('KERNEL_DEVICETREE')
+        artifacts += " " + d.getVar('KERNEL_IMAGETYPE') + " " + d.getVar('KERNEL_DEVICETREE_BASENAME')
     elif flash_type == "emmc":
         use_bootfiles = oe.types.boolean(d.getVar('TEZI_USE_BOOTFILES'))
         flash_data = rootfs_tezi_emmc(d, use_bootfiles)
@@ -474,7 +514,7 @@ IMAGE_CMD:teziimg () {
 	bbnote "Create Toradex Easy Installer tarball"
 
 	# Copy image json file to ${WORKDIR}/image-json
-	cp ${IMGDEPLOYDIR}/image*.json ${WORKDIR}/image-json/image.json
+	cp ${IMGDEPLOYDIR}/image-${IMAGE_BASENAME}.json ${WORKDIR}/image-json/image.json
 
 	if [ -n "$TEZI_EULA_URL" ]; then
 		curl -k --retry 5 -O ${TEZI_EULA_URL} || true
