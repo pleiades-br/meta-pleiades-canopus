@@ -6,7 +6,8 @@ SRC_URI:append:plds-verdin-imx8mp-canopus = " \
             file://defconfig \
             file://dts/canopus/imx8mp-verdin-canopus.dtsi \
             file://dts/canopus/imx8mp-verdin-wifi-canopus.dtsi \
-            file://dts/canopus/imx8mp-verdin-wifi-canopus.dts"
+            file://dts/canopus/imx8mp-verdin-wifi-canopus.dts \
+            file://patches/0001-imx219-adding-missing-link-setup-function.patch"
 
 SRC_URI:append:verdin-imx8mp = " \
             file://defconfig \

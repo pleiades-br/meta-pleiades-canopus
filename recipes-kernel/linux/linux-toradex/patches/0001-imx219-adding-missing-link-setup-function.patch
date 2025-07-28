@@ -1,0 +1,42 @@
+From 79d7b59fd52929b1c62820cd6b53863fcd545718 Mon Sep 17 00:00:00 2001
+From: "Aluisio (ZyZy) Victal" <alvictal@gmail.com>
+Date: Mon, 28 Jul 2025 14:39:18 +0000
+Subject: [PATCH] imx219 adding missing link setup function
+
+---
+ drivers/media/i2c/imx219.c | 12 ++++++++++++
+ 1 file changed, 12 insertions(+)
+
+diff --git a/drivers/media/i2c/imx219.c b/drivers/media/i2c/imx219.c
+index a3d5a8a7c660..8d31ebac96cd 100644
+--- a/drivers/media/i2c/imx219.c
++++ b/drivers/media/i2c/imx219.c
+@@ -1028,6 +1028,17 @@ static int imx219_identify_module(struct imx219 *imx219)
+ 	return 0;
+ }
+ 
++static int imx219_link_setup(struct media_entity *entity,
++    const struct media_pad *local,
++    const struct media_pad *remote, u32 flags)
++{
++    return 0;
++}
++
++static const struct media_entity_operations imx219_sd_media_ops = {
++    .link_setup = imx219_link_setup,
++};
++
+ static const struct v4l2_subdev_core_ops imx219_core_ops = {
+ 	.subscribe_event = v4l2_ctrl_subdev_subscribe_event,
+ 	.unsubscribe_event = v4l2_event_subdev_unsubscribe,
+@@ -1317,6 +1328,7 @@ static int imx219_probe(struct i2c_client *client)
+ 	imx219->sd.flags |= V4L2_SUBDEV_FL_HAS_DEVNODE |
+ 			    V4L2_SUBDEV_FL_HAS_EVENTS;
+ 	imx219->sd.entity.function = MEDIA_ENT_F_CAM_SENSOR;
++    imx219->sd.entity.ops = &imx219_sd_media_ops;
+ 
+ 	/* Initialize source pad */
+ 	imx219->pad.flags = MEDIA_PAD_FL_SOURCE;
+-- 
+2.25.1
+
