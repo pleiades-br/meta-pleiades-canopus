@@ -10,7 +10,6 @@ IMAGE_INSTALL:append:plds-verdin-imx8mp-canopus = " networkmanager"
 IMAGE_INSTALL:append:plds-verdin-imx8mp-canopus = " modemmanager"
 # Add i2c-tools
 IMAGE_INSTALL:append:plds-verdin-imx8mp-canopus = " i2c-tools"
-IMAGE_INSTALL:append:plds-verdin-imx8mp-canopus = " ruart"
 IMAGE_INSTALL:append:plds-verdin-imx8mp-canopus = " udev-canopus-rules"
 IMAGE_INSTALL:append:plds-verdin-imx8mp-canopus = " km-eg91-ctrl"
 IMAGE_INSTALL:append:plds-verdin-imx8mp-canopus = " opencv"

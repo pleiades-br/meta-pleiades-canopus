@@ -34,7 +34,7 @@
                     "Speaker", "Speaker";
                 dailink_master: simple-audio-card,cpu {
                         sound-dai = <&sai1>;
-                        clocks = <&audio_blk_ctrl IMX8MP_CLK_AUDIO_BLK_CTRL_SAI1_MCLK1>;
+                        clocks = <&audio_blk_ctrl IMX8MP_CLK_AUDIOMIX_SAI1_MCLK1>;
                 };
 
                 simple-audio-card,codec{
@@ -212,7 +212,7 @@
 	/* Audio Codec */
 	max9867: max9867@18 {
 		compatible = "maxim,max9867";
-        clocks = <&audio_blk_ctrl IMX8MP_CLK_AUDIO_BLK_CTRL_SAI1_MCLK1>;
+        clocks = <&audio_blk_ctrl IMX8MP_CLK_AUDIOMIX_SAI1_MCLK1>;
 		#sound-dai-cells = <0>;
 		reg = <0x18>;
 	};
