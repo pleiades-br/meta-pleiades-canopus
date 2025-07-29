@@ -1,0 +1,215 @@
+From 12b26e45086428617fa395a6d092132a1b471b43 Mon Sep 17 00:00:00 2001
+From: "Aluisio (ZyZy) Victal" <alvictal@gmail.com>
+Date: Mon, 28 Jul 2025 21:44:01 +0000
+Subject: [PATCH] adding more formats for imx8-isi
+
+---
+ drivers/staging/media/imx/imx8-isi-cap.c | 99 ++++++++++++++++++++++--
+ drivers/staging/media/imx/imx8-isi-fmt.c | 72 +++++++++++++++++
+ 2 files changed, 164 insertions(+), 7 deletions(-)
+
+diff --git a/drivers/staging/media/imx/imx8-isi-cap.c b/drivers/staging/media/imx/imx8-isi-cap.c
+index ca14b8485d53..d12bafbeddde 100644
+--- a/drivers/staging/media/imx/imx8-isi-cap.c
++++ b/drivers/staging/media/imx/imx8-isi-cap.c
+@@ -54,6 +54,62 @@ struct mxc_isi_fmt mxc_isi_src_formats[] = {
+ 		.memplanes	= 1,
+ 		.colplanes	= 1,
+ 		.align		= 2,
++	},{
++		.name		= "RAWRGB10 (SRGGB10)",
++		.fourcc		= V4L2_PIX_FMT_SRGGB10,
++		.depth		= { 16 },
++		.memplanes	= 1,
++		.colplanes	= 1,
++		.align		= 3,
++	},{
++		.name		= "RAWRGB10 (SGRBG10)",
++		.fourcc		= V4L2_PIX_FMT_SGRBG10,
++		.depth		= { 16 },
++		.memplanes	= 1,
++		.colplanes	= 1,
++		.align		= 3,
++	},{
++		.name		= "RAWRGB10 (SBGGR10)",
++		.fourcc		= V4L2_PIX_FMT_SBGGR10,
++		.depth		= { 16 },
++		.memplanes	= 1,
++		.colplanes	= 1,
++		.align		= 3,
++	},{
++		.name		= "RAWRGB10 (SGBRG10)",
++		.fourcc		= V4L2_PIX_FMT_SGBRG10,
++		.depth		= { 16 },
++		.memplanes	= 1,
++		.colplanes	= 1,
++		.align		= 3,
++	}, {
++		.name		= "RAWRGB8 (SRGGB8)",
++		.fourcc		= V4L2_PIX_FMT_SRGGB8,
++		.depth		= { 8 },
++		.memplanes	= 1,
++		.colplanes	= 1,
++		.align		= 4,
++    }, {
++		.name		= "RAWRGB8 (SGRBG8)",
++		.fourcc		= V4L2_PIX_FMT_SGRBG8,
++		.depth		= { 8 },
++		.memplanes	= 1,
++		.colplanes	= 1,
++		.align		= 4,
++	}, {
++		.name		= "RAWRGB8 (SGBRG8)",
++		.fourcc		= V4L2_PIX_FMT_SGBRG8,
++		.depth		= { 8 },
++		.memplanes	= 1,
++		.colplanes	= 1,
++		.align		= 4,
++	}, {
++		.name		= "RAWRGB8 (SBGGR8)",
++		.fourcc		= V4L2_PIX_FMT_SBGGR8,
++		.depth		= { 8 },
++		.memplanes	= 1,
++		.colplanes	= 1,
++		.align		= 4,
+ 	}
+ };
+ 
+@@ -96,15 +152,44 @@ struct mxc_isi_fmt *mxc_isi_get_src_fmt(struct v4l2_subdev_format *sd_fmt)
+ 	u32 index;
+ 
+ 	/* two fmt RGB32 and YUV444 from pixellink */
+-	if (sd_fmt->format.code == MEDIA_BUS_FMT_YUYV8_1X16 ||
+-	    sd_fmt->format.code == MEDIA_BUS_FMT_YVYU8_2X8 ||
+-	    sd_fmt->format.code == MEDIA_BUS_FMT_AYUV8_1X32 ||
+-	    sd_fmt->format.code == MEDIA_BUS_FMT_UYVY8_2X8 ||
+-	    sd_fmt->format.code == MEDIA_BUS_FMT_UYVY8_1X16||
+-	    sd_fmt->format.code == MEDIA_BUS_FMT_YUYV8_2X8)
++    switch(sd_fmt->format.code) {
++
++    case MEDIA_BUS_FMT_YUYV8_1X16:
++	case MEDIA_BUS_FMT_YVYU8_2X8:
++	case MEDIA_BUS_FMT_AYUV8_1X32:
++	case MEDIA_BUS_FMT_UYVY8_2X8:
++	case MEDIA_BUS_FMT_UYVY8_1X16:
++	case MEDIA_BUS_FMT_YUYV8_2X8:
+ 		index = 1;
+-	else
++        break;
++    case MEDIA_BUS_FMT_SRGGB10_1X10:
++        index = 2;
++        break;
++    case MEDIA_BUS_FMT_SGRBG10_1X10:
++        index = 3;
++        break;
++    case MEDIA_BUS_FMT_SBGGR10_1X10:
++        index = 4;
++        break;
++    case MEDIA_BUS_FMT_SGBRG10_1X10:
++        index = 5;
++        break;
++    case MEDIA_BUS_FMT_SRGGB8_1X8:
++        index = 6;
++        break;
++    case MEDIA_BUS_FMT_SGRBG8_1X8:
++        index = 7;
++        break;
++    case MEDIA_BUS_FMT_SGBRG8_1X8:
++        index = 8;
++        break;
++    case MEDIA_BUS_FMT_SBGGR8_1X8:
++        index = 9;
++        break;
++	default:
+ 		index = 0;
++        break;
++    }
+ 	return &mxc_isi_src_formats[index];
+ }
+ 
+diff --git a/drivers/staging/media/imx/imx8-isi-fmt.c b/drivers/staging/media/imx/imx8-isi-fmt.c
+index db11c809a3d3..85a1c341135a 100644
+--- a/drivers/staging/media/imx/imx8-isi-fmt.c
++++ b/drivers/staging/media/imx/imx8-isi-fmt.c
+@@ -97,6 +97,78 @@ struct mxc_isi_fmt mxc_isi_out_formats[] = {
+ 		.colplanes	= 1,
+ 		.align		= 2,
+ 		.mbus_code	= MEDIA_BUS_FMT_RGB888_1X24,
++	}, {
++		.name		= "RAWRGB10 (SRGGB10)",
++		.fourcc		= V4L2_PIX_FMT_SRGGB10,
++		.depth		= { 16 },
++        .color      = MXC_ISI_OUT_FMT_RAW16,
++		.memplanes	= 1,
++		.colplanes	= 1,
++		.align		= 3,
++        .mbus_code	= MEDIA_BUS_FMT_SRGGB10_1X10,
++	},{
++		.name		= "RAWRGB10 (SGRBG10)",
++		.fourcc		= V4L2_PIX_FMT_SGRBG10,
++		.depth		= { 16 },
++        .color      = MXC_ISI_OUT_FMT_RAW16,
++		.memplanes	= 1,
++		.colplanes	= 1,
++		.align		= 3,
++        .mbus_code	= MEDIA_BUS_FMT_SGRBG10_1X10,
++	},{
++		.name		= "RAWRGB10 (SBGGR10)",
++		.fourcc		= V4L2_PIX_FMT_SBGGR10,
++		.depth		= { 16 },
++        .color      = MXC_ISI_OUT_FMT_RAW16,
++		.memplanes	= 1,
++		.colplanes	= 1,
++		.align		= 3,
++        .mbus_code	= MEDIA_BUS_FMT_SBGGR10_1X10,
++	},{
++		.name		= "RAWRGB10 (SGBRG10)",
++		.fourcc		= V4L2_PIX_FMT_SGBRG10,
++		.depth		= { 16 },
++        .color      = MXC_ISI_OUT_FMT_RAW16,
++		.memplanes	= 1,
++		.colplanes	= 1,
++		.align		= 3,
++        .mbus_code	= MEDIA_BUS_FMT_SGBRG10_1X10,
++	}, {
++		.name		= "RAWRGB8 (SRGGB8)",
++		.fourcc		= V4L2_PIX_FMT_SRGGB8,
++		.depth		= { 8 },
++        .color      = MXC_ISI_OUT_FMT_RAW8,
++		.memplanes	= 1,
++		.colplanes	= 1,
++		.align		= 4,
++        .mbus_code	= MEDIA_BUS_FMT_SRGGB8_1X8,
++    }, {
++		.name		= "RAWRGB8 (SGRBG8)",
++		.fourcc		= V4L2_PIX_FMT_SGRBG8,
++		.depth		= { 8 },
++        .color      = MXC_ISI_OUT_FMT_RAW8,
++		.memplanes	= 1,
++		.colplanes	= 1,
++		.align		= 4,
++        .mbus_code	= MEDIA_BUS_FMT_SGRBG8_1X8,
++	}, {
++		.name		= "RAWRGB8 (SGBRG8)",
++		.fourcc		= V4L2_PIX_FMT_SGBRG8,
++		.depth		= { 8 },
++        .color      = MXC_ISI_OUT_FMT_RAW8,
++		.memplanes	= 1,
++		.colplanes	= 1,
++		.align		= 4,
++        .mbus_code	= MEDIA_BUS_FMT_SGBRG8_1X8,
++	}, {
++		.name		= "RAWRGB8 (SBGGR8)",
++		.fourcc		= V4L2_PIX_FMT_SBGGR8,
++		.depth		= { 8 },
++        .color      = MXC_ISI_OUT_FMT_RAW8,
++		.memplanes	= 1,
++		.colplanes	= 1,
++		.align		= 4,
++        .mbus_code	= MEDIA_BUS_FMT_SBGGR8_1X8,
+ 	}
+ };
+ 
+-- 
+2.25.1
+
