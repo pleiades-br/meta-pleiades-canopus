@@ -1,6 +1,6 @@
 DESCRIPTION = "Wrapper for take raw images Video4Linux2 and converter to png"
 LICENSE = "MIT"
-LIC_FILES_CHKSUM = "file://LICENSE;md5=4a4dcba7e9f35ff16fd3c325ea239fd6"
+LIC_FILES_CHKSUM = "file://LICENSE;md5=66a877f86cfc3ba8edd6ceeb2aadcef2"
 
 SRC_URI = " \
     git://github.com/pleiades-br/canopus-imgcap.git;protocol=https;branch=main \
