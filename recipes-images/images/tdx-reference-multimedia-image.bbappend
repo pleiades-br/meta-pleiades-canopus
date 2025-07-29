@@ -17,7 +17,7 @@ IMAGE_INSTALL:append:plds-verdin-imx8mp-canopus = " tensorflow-lite"
 IMAGE_INSTALL:append:plds-verdin-imx8mp-canopus = " keras"
 IMAGE_INSTALL:append:plds-verdin-imx8mp-canopus = " libcamera"
 IMAGE_INSTALL:append:plds-verdin-imx8mp-canopus = " hostapd"
-IMAGE_INSTALL:append:plds-verdin-imx8mp-canopus = " imagemagick"
+IMAGE_INSTALL:append:plds-verdin-imx8mp-canopus = " imagemagick imgcap"
 
 IMAGE_INSTALL:remove:plds-verdin-imx8mp-canopus = " hostapd-example"
 IMAGE_INSTALL:remove:plds-verdin-imx8mp-canopus = " python3-wpa-supplicant wpa-supplicant"
