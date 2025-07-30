@@ -2,6 +2,8 @@
 id=wireless
 uuid=29883662-1f5e-4e24-aa6c-f3fd03123a75
 type=wifi
+autoconnect=true
+autoconnect-priority=999
 interface-name=uap0
 
 [wifi]
