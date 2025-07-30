@@ -6,7 +6,7 @@ SRC_URI += " \
 "
 
 SYSTEMD_SERVICE:${PN} = "hostapd.service"
-SYSTEMD_AUTO_ENABLE:${PN} = "enable"
+SYSTEMD_AUTO_ENABLE:${PN} = "disable"
 
 do_install:append() {
     install -m 0644 ${WORKDIR}/hostapd.conf  ${D}${sysconfdir}/
