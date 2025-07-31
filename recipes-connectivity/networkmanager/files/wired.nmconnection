@@ -4,7 +4,7 @@ uuid=83470bf3-2346-423c-84c2-6e2ce0e0c74e
 type=ethernet
 autoconnect=true
 autoconnect-priority=999
-interface-name=end1
+interface-name=end0
 
 [ethernet]
 

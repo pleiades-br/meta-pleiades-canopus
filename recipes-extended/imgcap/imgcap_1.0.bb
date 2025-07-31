@@ -5,7 +5,7 @@ LIC_FILES_CHKSUM = "file://LICENSE;md5=66a877f86cfc3ba8edd6ceeb2aadcef2"
 SRC_URI = " \
     git://github.com/pleiades-br/canopus-imgcap.git;protocol=https;branch=main \
     "
-SRCREV = "4b905de11099fca7c5252bce268a04dee80f05bb"
+SRCREV = "7a9cd79a9377bb67d0bf7cdc1488103940f45000"
 
 S = "${WORKDIR}/git"
 
