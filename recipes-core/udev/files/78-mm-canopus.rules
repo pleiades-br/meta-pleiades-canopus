@@ -1,18 +1,24 @@
-# Blacklist all tty devices by default
-ACTION=="add|change|move", SUBSYSTEM=="tty", KERNEL=="tty*", \
-ENV{ID_MM_DEVICE_IGNORE}="1"
-
 # Blacklist USB devices to prevent USB modem scanning
 ACTION=="add|change|move", SUBSYSTEM=="usb", \
 ENV{ID_MM_DEVICE_IGNORE}="1"
 
+# Blacklist all network interfaces (ethernet and wifi)
+ACTION=="add|change|move", SUBSYSTEM=="net", \
+ENV{ID_MM_DEVICE_IGNORE}="1"
+
+# Blacklist MMC devices (covers mlan0, uap0 from your WiFi chip)
+ACTION=="add|change|move", SUBSYSTEM=="mmc", \
+ENV{ID_MM_DEVICE_IGNORE}="1"
+
+# Blacklist specific ethernet controllers
+ACTION=="add|change|move", SUBSYSTEM=="platform", KERNEL=="*.ethernet", \
+ENV{ID_MM_DEVICE_IGNORE}="1"
+
 # Whitelist and configure only your specific Quectel modem
 ACTION=="add|change|move", SUBSYSTEM=="tty", KERNEL=="ttymxc0", \
-KERNELS=="30860000.serial", \
-ENV{ID_MM_DEVICE_IGNORE}="", \
+ATTRS{idVendor}=="2c7c", ATTRS{idProduct}=="0191", \
 ENV{ID_MM_DEVICE_PROCESS}="1", \
 ENV{ID_MM_TTY_BAUDRATE}="115200", \
+ENV{ID_MM_PORT_TYPE_AT_PRIMARY}="1", \
 ENV{ID_MM_PORT_TYPE_AT_PPP}="1", \
-ENV{ID_MM_TTY_FLOW_CONTROL}="none", \
-ENV{ID_VENDOR}="Quectel", \
-ENV{ID_MM_PLUGIN_ALLOWED}="quectel"
+ENV{ID_MM_TTY_FLOW_CONTROL}="none"
