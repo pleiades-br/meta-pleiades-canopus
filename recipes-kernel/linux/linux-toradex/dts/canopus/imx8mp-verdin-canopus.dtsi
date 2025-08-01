@@ -283,7 +283,7 @@
 	fsl,sai-mclk-direction-output;
 	pinctrl-names = "default";
 	pinctrl-0 = <&pinctrl_sai1>;
-    status = "okay";
+    status = "disable";
 };
 
 /* Verdin UART_1, connector X50 through RS485 transceiver */
