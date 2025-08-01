@@ -2,7 +2,7 @@ FILESEXTRAPATHS:prepend := "${THISDIR}/${PN}:"
 
 SRC_URI:append:plds-verdin-imx8mp-canopus = " \
             file://config/verdin-imx8mp-canopus_defconfig \
-            file://patches/0001-adding-canopus-board-as-fdt-board.patch"           
+            file://patches/0001-change-bootargs-for-canopus.patch"           
 
 do_patchextra() {
     if [ "${MACHINE}" == "plds-verdin-imx8mp-canopus" ]

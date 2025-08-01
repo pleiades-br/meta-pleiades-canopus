@@ -1,0 +1,26 @@
+From e587b22368cb431eb9b37630244a0a615ddcb8a6 Mon Sep 17 00:00:00 2001
+From: "Aluisio (ZyZy) Victal" <alvictal@gmail.com>
+Date: Fri, 1 Aug 2025 15:54:27 +0000
+Subject: [PATCH] change bootargs for canopus
+
+---
+ include/configs/verdin-imx8mp.h | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
+
+diff --git a/include/configs/verdin-imx8mp.h b/include/configs/verdin-imx8mp.h
+index 0b88e95603d..ca870a51532 100644
+--- a/include/configs/verdin-imx8mp.h
++++ b/include/configs/verdin-imx8mp.h
+@@ -41,7 +41,8 @@
+ 	MEM_LAYOUT_ENV_SETTINGS \
+ 	"boot_script_dhcp=boot.scr\0" \
+ 	"console=ttymxc2\0" \
+-	"fdt_board=dev\0" \
++	"fdt_board=canopus\0" \
++    "tdxargs=net.ifnames=0\0" \
+ 	"initrd_addr=0x43800000\0" \
+ 	"initrd_high=0xffffffffffffffff\0" \
+ 	"update_uboot=askenv confirm Did you load flash.bin (y/N)?; " \
+-- 
+2.25.1
+

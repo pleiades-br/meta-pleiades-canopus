@@ -4,7 +4,6 @@ SRC_URI += " \
     file://lte-modem.nmconnection \
     file://NetworkManager.conf \
     file://wired.nmconnection \
-    file://wireless.nmconnection \
     "
 
 FILES:${PN} += " \

@@ -1,8 +1,0 @@
-[Match]
-Name=end0
-KernelCommandLine=!nfsroot
-
-[Network]
-DNS=8.8.8.8
-Address=192.168.30.1/24
-Gateway=192.168.30.254

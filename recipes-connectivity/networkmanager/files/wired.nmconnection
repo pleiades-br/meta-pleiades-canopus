@@ -3,7 +3,7 @@ id=wired
 uuid=83470bf3-2346-423c-84c2-6e2ce0e0c74e
 type=ethernet
 autoconnect=true
-interface-name=end0
+interface-name=eth0
 
 [ethernet]
 
