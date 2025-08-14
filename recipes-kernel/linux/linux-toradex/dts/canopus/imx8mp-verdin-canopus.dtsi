@@ -85,7 +85,9 @@
 		#size-cells = <0>;
 
         vsc8531_0: ethernet-phy@0 {
+            reg = <0>;
             compatible = "ethernet-phy-id0007.0570";
+            reset-gpios = <&gpio4 2 GPIO_ACTIVE_LOW>;
             vsc8531,vddmac		= <3300>;
             vsc8531,edge-slowdown	= <7>;
             vsc8531,led-0-mode	= <VSC8531_LINK_1000_ACTIVITY>;
@@ -304,6 +306,10 @@
 /* Verdin UART_3, used as the Linux Console */
 &uart3 {
 	status = "okay";
+};
+
+&uart4 {
+    status = "okay";
 };
 
 /* Verdin USB_1 */
