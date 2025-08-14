@@ -16,7 +16,6 @@ ENV{ID_MM_DEVICE_IGNORE}="1"
 
 # Whitelist and configure only your specific Quectel modem
 ACTION=="add|change|move", SUBSYSTEM=="tty", KERNEL=="ttymxc0", \
-ATTRS{idVendor}=="2c7c", ATTRS{idProduct}=="0191", \
 ENV{ID_MM_DEVICE_PROCESS}="1", \
 ENV{ID_MM_TTY_BAUDRATE}="115200", \
 ENV{ID_MM_PORT_TYPE_AT_PRIMARY}="1", \
