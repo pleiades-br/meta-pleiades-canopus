@@ -48,13 +48,51 @@
     };
 };
 
+{/} {
+     leds {
+        compatible = "gpio-leds";
+
+        pinctrl-names = "default";
+               pinctrl-0 = <&pinctrl_my_led>;
+        led-1 {
+            label = "LED_1";
+            gpios = <&gpio5 6 GPIO_ACTIVE_HIGH>;
+            linux,default-trigger = "heartbeat";
+            default-state = "off";
+        };
+
+        led-2 {
+            label = "LED_2";
+            gpios = <&gpio5 8 GPIO_ACTIVE_HIGH>;
+            linux,default-trigger = "heartbeat";
+            default-state = "off";
+        };
+
+        led-3 {
+            label = "LED_3";
+            gpios = <&gpio5 7 GPIO_ACTIVE_HIGH>;
+            linux,default-trigger = "heartbeat";
+            default-state = "off";
+        };
+    };   
+};
+
+&iomuxc {
+    pinctrl_my_led: myledgrp {
+               fsl,pins =
+                       <MX8MP_IOMUXC_ECSPI1_SCLK__GPIO5_IO06 0x104>, // SODIMM 196// pull-down enabled and drive strength X2
+                       <MX8MP_IOMUXC_ECSPI1_MOSI__GPIO5_IO07  0x104>, // SODIMM 200 // pull-down enabled and drive strength X2
+            <MX8MP_IOMUXC_ECSPI1_MISO__GPIO5_IO08  0x104>; // SODIMM 198 // pull-down enabled and drive strength X2
+       };
+};
+
 &backlight {
 	power-supply = <&reg_3p3v>;
 };
 
 /* Verdin SPI_1 */
 &ecspi1 {
-	status = "okay";
+	status = "disabled";
 };
 
 /* EEPROM on display adapter boards */
@@ -207,12 +245,14 @@
 	status = "okay";
 
 	accerometer: mx6655@15 {
+        label = "mxc6655";
 		compatible = "memsic,mxc6655";
 		reg = <0x15>;
 	};
 
 	/* Audio Codec */
 	max9867: max9867@18 {
+        label = "max9867";
 		compatible = "maxim,max9867";
         clocks = <&audio_blk_ctrl IMX8MP_CLK_AUDIOMIX_SAI1_MCLK1>;
 		#sound-dai-cells = <0>;
@@ -221,6 +261,7 @@
 
 	/* IO Expander */
 	pca6416: gpio@20 {
+        label = "pca6416";
 		compatible = "nxp,pca6416";
 		reg = <0x20>;
 		gpio-controller;
@@ -228,6 +269,7 @@
 	};
 
 	light-sensor@44 {
+        label = "opt3001";
 		compatible = "ti,opt3001";
 		reg = <0x44>;
 		interrupt-parent = <&gpio1>;
@@ -236,6 +278,7 @@
 
 	/* Temperature, humidty sensor */
 	shtc3: shtc3@70 {
+        label = "shtc3";
 		compatible = "sensirion,shtc3";
 		reg = <0x70>;
 		sensirion,blocking-io;
