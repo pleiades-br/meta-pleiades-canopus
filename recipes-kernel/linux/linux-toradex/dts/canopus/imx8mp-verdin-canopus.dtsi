@@ -172,7 +172,7 @@
 	status = "okay";
     /delete-property/ atmel_mxt_ts_mezzanine;
 
-	imx219_0: imx219@10 {
+	/*imx219_0: imx219@10 {
 		compatible = "sony,imx219";
 		reg = <0x10>;
         status = "okay";
@@ -180,9 +180,9 @@
 		clocks = <&clk IMX8MP_CLK_IPP_DO_CLKO2>;
 		clock-names = "xclk";
 
-		VANA-supply = <&reg_3p3v>; /* 2.8v */
-		VDIG-supply = <&reg_3p3v>; /* 1.8v */
-		VDDL-supply = <&reg_3p3v>; /* 1.2v */
+		VANA-supply = <&reg_3p3v>;
+		VDIG-supply = <&reg_3p3v>;
+		VDDL-supply = <&reg_3p3v>;
         reset-gpios = <&gpio1 7 GPIO_ACTIVE_HIGH>;
         csi_id = <0>;
 
@@ -196,12 +196,44 @@
 				remote-endpoint = <&mipi_csi0_ep>;
 			};
 		};
+	}; */
+
+	imx219_0: imx219_mipi@10 {
+		compatible = "sony,imx219";
+		reg = <0x10>;
+		pinctrl-names = "default";
+		pinctrl-0 = <&pinctrl_csi0_rst> ,<&pinctrl_csi0_pwn>; 
+		clocks = <&clk IMX8MP_CLK_IPP_DO_CLKO2>;
+		clock-names = "xclk";
+		assigned-clocks = <&clk IMX8MP_CLK_IPP_DO_CLKO2>;
+		assigned-clock-parents = <&clk IMX8MP_CLK_24M>;
+		assigned-clock-rates = <24000000>;
+		csi_id = <0>;
+		pwn-gpios = <&gpio1 15 GPIO_ACTIVE_HIGH>;
+		rst-gpios = <&gpio1 6 GPIO_ACTIVE_HIGH>;
+		mclk = <24000000>;
+		mclk_source = <0>;
+
+		mipi_csi;
+		status = "okay";
+
+		port {
+			imx219_mipi_0_ep: endpoint {
+				remote-endpoint = <&mipi_csi0_ep>;
+				data-lanes = <1 2>;
+				clock-lanes = <0>;
+				clock-noncontinuous;
+				max-pixel-frequency = /bits/ 64 <456000000>;
+			};
+		};
+
 	};
 };
 
 &i2c3 {
 	status = "okay";
-	imx219_1@10 {
+	
+    /*imx219_1@10 {
 		compatible = "sony,imx219";
 		reg = <0x10>;
 		status = "okay";
@@ -214,15 +246,15 @@
 		clock then, but this just sets up an actual clock.
 		*/
 
-		clocks = <&clk IMX8MP_CLK_IPP_DO_CLKO2>;
-		clock-names = "xclk";
+		//clocks = <&clk IMX8MP_CLK_IPP_DO_CLKO2>;
+		//clock-names = "xclk";
 
 		/* All supplies are derived from the 3p3v on the sensor
 		 * board. This should probably be modeled differently in
 		 * DT, but this seems to work anyway. */
-		VANA-supply = <&reg_3p3v>; /* 2.8v */
-		VDIG-supply = <&reg_3p3v>; /* 1.8v */
-		VDDL-supply = <&reg_3p3v>; /* 1.2v */
+		/*VANA-supply = <&reg_3p3v>; 
+		VDIG-supply = <&reg_3p3v>; 
+		VDDL-supply = <&reg_3p3v>; 
         reset-gpios = <&gpio4 3 GPIO_ACTIVE_HIGH>;
         csi_id = <1>;
 
@@ -236,7 +268,7 @@
 				remote-endpoint = <&mipi_csi1_ep>;
 			};
 		};
-	};
+	}; */
 
 };
 
@@ -398,10 +430,11 @@
 		mipi_csi0_ep: endpoint {
 			remote-endpoint = <&imx219_mipi_0_ep>;
 			data-lanes = <2>;
-			csis-hs-settle = <13>;
+            csis-hs-settle = <16>;
+			/*csis-hs-settle = <13>;
 			csis-clk-settle = <2>;
 			csis-wclk;
-            clock-noncontinuous;
+            clock-noncontinuous;*/
 		};
 	};
 };
@@ -412,7 +445,7 @@
     csi = <1>;
 	status = "okay";
 
-	port@1 {
+	/*port@1 {
 		reg = <1>;
 		mipi_csi1_ep: endpoint {
 			remote-endpoint = <&imx219_mipi_1_ep>;
@@ -422,7 +455,7 @@
 			csis-wclk;
             clock-noncontinuous;
 		};
-	};
+	};*/
 };
 
 &cameradev {
@@ -430,19 +463,19 @@
 };
 
 &isi_0 {
-	status = "okay";
+	status = "disabled";
 
 	cap_device {
-		status = "okay";
+		status = "disabled";
 	};
 
 };
 
 &isi_1 {
-	status = "okay";
+	status = "disabled";
 
 	cap_device {
-		status = "okay";
+		status = "disabled";
 	};
 };
 
@@ -451,7 +484,7 @@
 };
 
 &isp_1 {
-    status = "okay";
+    status = "disabled";
 };
 
 &dewarp {
