@@ -14,5 +14,5 @@ do_configure:prepend() {
     cp -r ${WORKDIR}/extra/units  ${S}/
 }
 
-#FILES_SOLIBS_VERSIONED += "${libdir}/libimx219.so"
+FILES_SOLIBS_VERSIONED += "${libdir}/libimx219.so"
 
