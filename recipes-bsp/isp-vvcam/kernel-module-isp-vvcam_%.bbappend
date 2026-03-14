@@ -6,5 +6,5 @@ SRC_URI += " \
 "
 
 do_configure:prepend() {
-    cp -r ${WORKDIR}/extra/v4l2 ${S}/git/vvcam
+    cp -r ${WORKDIR}/extra/v4l2/sensor ${S}
 }
