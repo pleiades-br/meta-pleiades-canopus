@@ -39,12 +39,13 @@ index a9506d0..dd46d1a 100755
                           ;;
 +                 imx219_1080p30 )
 +                         MODULES=("imx219" "${MODULES[@]}")
-+                         RUN_OPTION="CAMERA0"
++                         RUN_OPTION="DUAL_CAMERA"
 +                         CAM_NAME="imx219"
 +                         DRV_FILE="imx219.drv"
 +                         MODE_FILE="IMX219_MODES.txt"
 +                         MODE="0"
 +                         write_sensor_cfg_file "Sensor0_Entry.cfg" $CAM_NAME $DRV_FILE $MODE_FILE $MODE
++                         write_sensor_cfg_file "Sensor1_Entry.cfg" $CAM_NAME $DRV_FILE $MODE_FILE $MODE
 +                         ;;
  		 *)
  			echo "ISP configuration \"$ISP_CONFIG\" unsupported."
