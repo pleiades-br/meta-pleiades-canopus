@@ -1,4 +1,4 @@
-From 3850ec1a0b35513a51134846ca52a7d15d3ab30a Mon Sep 17 00:00:00 2001
+From 5adeddb61cffa828be5140752fbe8057d2c2510b Mon Sep 17 00:00:00 2001
 From: "Aluisio (ZyZy) Victal" <alvictal@gmail.com>
 Date: Mon, 16 Mar 2026 23:22:11 +0000
 Subject: [PATCH] Applying modification for imx219
@@ -71,7 +71,7 @@ index a9506d0..78f8272 100755
  			echo "ISP configuration \"$ISP_CONFIG\" unsupported."
  			echo -e "$USAGE" >&2
 diff --git a/imx/start_isp.sh b/imx/start_isp.sh
-index 22e7783..2afb83f 100755
+index d544b4c..719bedc 100755
 --- a/imx/start_isp.sh
 +++ b/imx/start_isp.sh
 @@ -10,6 +10,7 @@ RUNTIME_DIR="$( cd "$(dirname "$0")" >/dev/null 2>&1 ; pwd -P )"
@@ -134,3 +134,4 @@ index a91699b..5ae8351 100755
 +add_dependencies(copy_shell_libs_${module} drv/IMX219)
  
  endif (GENERATE_PARTITION_BUILD)
+ 
